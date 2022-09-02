@@ -1,7 +1,7 @@
 export const getLocalStorageTheme = (): "light" | "dark" => {
     let theme: "light" | "dark" = "light";
     if (typeof window !== "undefined") {
-        theme = window.localStorage.getItem("theme") as "light" | "dark";
+        theme = window.localStorage.getItem("theme") as "light" | "dark" ?? "light";
     }
     return theme;
 }
