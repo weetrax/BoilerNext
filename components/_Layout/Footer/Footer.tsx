@@ -8,13 +8,14 @@ type FooterProps = {
 
 const Footer: React.FC<FooterProps> = () => {
   return (
-    <footer className="bg-dark-600 backdrop-filter backdrop-blur bg-opacity-70">
+    <footer className="bg-white dark:bg-dark-600 backdrop-filter backdrop-blur bg-opacity-70">
       <Container>
         <ul className="py-12 text-center">
           <li>
             <p>
               &copy; {new Date().getFullYear()}{" "}
-              <span className="font-bold text-primary-500">BoilerNext </span> - A{" "}
+              <span className="font-bold text-primary-500">BoilerNext </span> -
+              A{" "}
               <a
                 href="https://nextjs.org/"
                 target={"_blank"}
