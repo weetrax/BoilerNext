@@ -1,5 +1,5 @@
-import React from "react";
-import { getLocalStorageTheme } from "../tools/theme";
+import React from 'react';
+import { getLocalStorageTheme } from '../tools/theme';
 
 type ThemeContextType = {
     theme: "light" | "dark";

@@ -1,6 +1,6 @@
-import React, { Fragment, useState } from "react";
-import PropTypes from "prop-types";
-import { Dialog, Transition } from "@headlessui/react";
+import PropTypes from 'prop-types';
+import React, { Fragment, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 
 type PopupProps = {
   btnElement: (onClick: () => void) => JSX.Element;

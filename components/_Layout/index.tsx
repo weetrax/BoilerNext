@@ -1,10 +1,9 @@
-import classNames from "classnames";
-import Footer from "./Footer";
-import Navbar from "./Navbar";
-import NextNprogress from "nextjs-progressbar";
-import React from "react";
-import { Toaster } from "react-hot-toast";
-import { useTheme } from "../../hooks/useTheme";
+import Footer from './Footer';
+import Navbar from './Navbar';
+import NextNprogress from 'nextjs-progressbar';
+import React from 'react';
+import { Toaster } from 'react-hot-toast';
+import { useTheme } from '../../hooks/useTheme';
 
 type _LayoutProps = {
   children: React.ReactNode;

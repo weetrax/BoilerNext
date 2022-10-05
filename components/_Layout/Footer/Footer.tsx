@@ -1,6 +1,6 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import Container from "../Container";
+import React from 'react';
+import Container from '../Container';
+import PropTypes from 'prop-types';
 
 type FooterProps = {
   //

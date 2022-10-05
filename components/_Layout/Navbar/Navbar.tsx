@@ -1,13 +1,13 @@
-import classNames from "classnames";
-import Container from "../Container";
-import Link from "next/link";
-import PropTypes from "prop-types";
-import React from "react";
-import { Disclosure } from "@headlessui/react";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import { routes } from "../../../routes";
-import { useRouter } from "next/router";
-import { useTheme } from "../../../hooks/useTheme";
+import classNames from 'classnames';
+import Container from '../Container';
+import Link from 'next/link';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Disclosure } from '@headlessui/react';
+import { MenuIcon, XIcon } from '@heroicons/react/outline';
+import { routes } from '../../../routes';
+import { useRouter } from 'next/router';
+import { useTheme } from '../../../hooks/useTheme';
 
 type NavbarProps = {
   //
@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = () => {
       as="nav"
       className="bg-white dark:bg-dark-600 backdrop-filter backdrop-blur bg-opacity-70 items-center sticky top-0 shadow-sm z-20"
     >
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <Container>
             <div className="relative flex items-center justify-between h-16">
@@ -133,6 +133,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                           : "hover:bg-dark-500",
                         "block px-3 py-2 rounded-md text-base font-medium duration-200 ease-in-out transition"
                       )}
+                      onClick={() => close()}
                       aria-current={
                         router.pathname == item.href ? "page" : undefined
                       }
