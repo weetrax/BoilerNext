@@ -1,3 +1,3 @@
 ## BoilerNext
 
-BoilerNext - A NextJS - Tailwind - Typescript Boilerplate
+A NextJS Boilerplate with Tailwind & Typescript ready to use!
