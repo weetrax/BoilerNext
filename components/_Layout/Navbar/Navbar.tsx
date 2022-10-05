@@ -15,7 +15,7 @@ type NavbarProps = {
 
 const navigation = [
   { name: "Home", href: routes.home },
-  { name: "Portfolio", href: routes.portfolio },
+  { name: "Page 1", href: routes.page1 },
 ];
 
 const Navbar: React.FC<NavbarProps> = () => {
@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                   onClick={toggleTheme}
                   type="button"
                   className={
-                    "bg-gray-50 dark:bg-dark-500 border border-gray-100 dark:border-dark-700 px-3 py-2 rounded-md text-sm font-medium"
+                    "group bg-gray-50 dark:bg-dark-500 border border-gray-100 dark:border-dark-700 px-3 py-2 rounded-md text-sm font-medium"
                   }
                 >
                   {theme === "dark" ? (
@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="w-6 h-6"
+                      className="w-6 h-6 duration-200 transition-transform ease-in-out group-hover:rotate-12"
                     >
                       <path
                         strokeLinecap="round"
@@ -107,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="w-6 h-6"
+                      className="w-6 h-6 duration-200 transition-transform ease-in-out group-hover:rotate-12"
                     >
                       <path
                         strokeLinecap="round"

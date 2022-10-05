@@ -6,13 +6,13 @@ const Home: NextPage = () => {
     return (
         <div>
             <Head>
-                <title>BoilerNext - Portfolio</title>
+                <title>BoilerNext - Page 1</title>
                 <meta name="description" content="BoilerNext - A NextJS - Tailwind - Typescript Boilerplate" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Container>
                 <div className='my-8'>
-                    <h1 className='text-2xl font-bold'>Portfolio</h1>
+                    <h1 className='text-2xl font-bold'>Page 1</h1>
                 </div>
             </Container>
         </div>

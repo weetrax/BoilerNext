@@ -10,7 +10,7 @@ const Footer: React.FC<FooterProps> = () => {
   return (
     <footer className="bg-white dark:bg-dark-600 backdrop-filter backdrop-blur bg-opacity-70">
       <Container>
-        <ul className="py-12 text-center">
+        <ul className="py-8 text-center">
           <li>
             <p>
               &copy; {new Date().getFullYear()}{" "}
