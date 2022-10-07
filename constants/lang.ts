@@ -23,6 +23,18 @@ export const lang = {
         fr: "Confirmez le mot de passe",
         en: "Confirm password"
     },
+    login: {
+        fr: "Se connecter",
+        en: "Login",
+    },
+    loginLoading: {
+        fr: "Connexion en cours...",
+        en: "Login...",
+    },
+    loginOK: {
+        fr: "Vous êtes maintenant connecté !",
+        en: "You are now logged !",
+    },
     register: {
         fr: "S'inscrire",
         en: "Register"
@@ -39,9 +51,17 @@ export const lang = {
         fr: "Les mots de passe ne sont pas identiques.",
         en: "Passwords do not match."
     },
+    passwordInvalid: {
+        fr: "Mot de passe incorrect !",
+        en: "Incorrect password !"
+    },
     usernameAlreadyTaken: {
-        fr: "Ce nom d'utilisateur est déjà pris.",
+        fr: "Ce nom d'utilisateur est déjà associé à un compte.",
         en: "This username is already taken."
+    },
+    emailAlreadyTaken: {
+        fr: "Cette adresse e-mail est déjà associé à un compte.",
+        en: "This email is already taken."
     },
     errorOccurred: {
         fr: "Oups, une erreur est survenue.",

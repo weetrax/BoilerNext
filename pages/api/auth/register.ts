@@ -24,10 +24,12 @@ router
     const { username, email, password, passwordConfirm, country, city } =
       req.body;
 
+    let error: ResponseError = {
+      message: ""
+    }
+
     if (password !== passwordConfirm) {
-      const error: ResponseError = {
-        message: lang.passwordNotMatch.fr,
-      };
+      error = { ...error, message: lang.passwordNotMatch.fr }
       return res.status(500).json(error);
     }
 
@@ -42,12 +44,18 @@ router
     };
 
 
-    /* We check if the username is already taken */
-    const existingUser = await User.findOne({ username: username });
-    if (existingUser) {
-      const error: ResponseError = {
-        message: lang.usernameAlreadyTaken.fr
-      };
+    /* Check if the username is already taken */
+    const existingUsername = await User.findOne({ username: username });
+    if (existingUsername) {
+      error = { ...error, message: lang.usernameAlreadyTaken.fr }
+      return res.status(500).json(error);
+    }
+
+
+    /* Checking if the email is already taken. */
+    const existingEmail = await User.findOne({ email: email });
+    if (existingEmail) {
+      error = { ...error, message: lang.emailAlreadyTaken.fr }
       return res.status(500).json(error);
     }
 
@@ -56,9 +64,7 @@ router
       const saved = await newUser.save();
       return res.status(200).json(saved);
     } catch (err) {
-      const error: ResponseError = {
-        message: `${lang.errorOccurred}" - "${JSON.stringify(err)}`,
-      };
+      error = { ...error, message: `${lang.errorOccurred}" - "${JSON.stringify(err)}` }
       return res.status(500).json(error);
     }
   });

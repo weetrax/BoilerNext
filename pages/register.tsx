@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Container from '../components/_Layout/Container';
 import Head from 'next/head';
 import InputText from '../components/_Layout/Controls/InputText';
@@ -36,8 +36,8 @@ const Home: NextPage = () => {
           id: toastRegister
         })
       })
-      .catch((err) => {
-        toast.error(JSON.stringify(err), {
+      .catch((err: AxiosError<any, any>) => {
+        toast.error(err.response?.data.message, {
           id: toastRegister
         });
       })
