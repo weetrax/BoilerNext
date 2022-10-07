@@ -1,8 +1,8 @@
-import { connectToDatabase } from './../../../lib/database/index';
-import { createRouter } from 'next-connect';
-import { IUser, User } from '../../../lib/database/models/User';
-import { lang } from '../../../constants/lang';
-import { ResponseError } from '../../../types';
+import { connectToDatabase } from "./../../../lib/database/index";
+import { createRouter } from "next-connect";
+import { IUser, User } from "../../../lib/database/models/User";
+import { lang } from "../../../constants/lang";
+import { ResponseError } from "../../../types";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -25,11 +25,11 @@ router
       req.body;
 
     let error: ResponseError = {
-      message: ""
-    }
+      message: "",
+    };
 
     if (password !== passwordConfirm) {
-      error = { ...error, message: lang.passwordNotMatch.fr }
+      error.message = lang.passwordNotMatch.fr;
       return res.status(500).json(error);
     }
 
@@ -40,22 +40,20 @@ router
       country,
       city,
       isVerified: true,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
-
 
     /* Check if the username is already taken */
     const existingUsername = await User.findOne({ username: username });
     if (existingUsername) {
-      error = { ...error, message: lang.usernameAlreadyTaken.fr }
+      error.message = lang.usernameAlreadyTaken.fr;
       return res.status(500).json(error);
     }
-
 
     /* Checking if the email is already taken. */
     const existingEmail = await User.findOne({ email: email });
     if (existingEmail) {
-      error = { ...error, message: lang.emailAlreadyTaken.fr }
+      error.message = lang.emailAlreadyTaken.fr;
       return res.status(500).json(error);
     }
 
@@ -64,7 +62,7 @@ router
       const saved = await newUser.save();
       return res.status(200).json(saved);
     } catch (err) {
-      error = { ...error, message: `${lang.errorOccurred}" - "${JSON.stringify(err)}` }
+      error.message = `${lang.errorOccurred}" - "${JSON.stringify(err)}`;
       return res.status(500).json(error);
     }
   });

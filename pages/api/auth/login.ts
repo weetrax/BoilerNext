@@ -1,8 +1,8 @@
-import { connectToDatabase } from './../../../lib/database/index';
-import { createRouter } from 'next-connect';
-import { lang } from '../../../constants/lang';
-import { ResponseError } from '../../../types';
-import { User } from '../../../lib/database/models/User';
+import { connectToDatabase } from "./../../../lib/database/index";
+import { createRouter } from "next-connect";
+import { lang } from "../../../constants/lang";
+import { ResponseError } from "../../../types";
+import { User } from "../../../lib/database/models/User";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -21,38 +21,36 @@ router
   .post(async (req, res) => {
     connectToDatabase();
 
-    const { email, password } =
-      req.body;
+    const { email, password } = req.body;
 
     let error: ResponseError = {
-      message: ""
-    }
+      message: "",
+    };
 
     User.findOne({ email: email }, function (err: any, user: any) {
       if (err) {
-        error = { ...error, message: lang.passwordInvalid.fr }
+        error.message = lang.passwordInvalid.fr;
         return res.status(500).json(error);
       }
       if (!user) {
-        error = { ...error, message: lang.passwordInvalid.fr }
+        error.message = lang.passwordInvalid.fr;
         return res.status(500).json(error);
       }
 
       // test a matching password
       user.comparePassword(password, function (err: any, isMatch: boolean) {
         if (err) {
-          error = { ...error, message: lang.errorOccurred.fr }
+          error.message = lang.errorOccurred.fr;
           return res.status(500).json(error);
         }
         if (!isMatch) {
-          error = { ...error, message: lang.passwordInvalid.fr }
+          error.message = lang.passwordInvalid.fr;
           return res.status(500).json(error);
-        }
-        else {
+        } else {
           res.status(200).json(user);
         }
       });
-    })
+    });
   });
 
 export default router.handler();
