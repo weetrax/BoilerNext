@@ -20,7 +20,7 @@ const _Layout: React.FC<_LayoutProps> = ({ children }) => {
         }
       >
         <Navbar />
-        <Toaster position="bottom-right" reverseOrder={false} />
+        <Toaster position="top-center" reverseOrder={false} />
         <NextNprogress
           color="#fca311"
           startPosition={0.3}

@@ -1,8 +1,12 @@
-import bcrypt from "bcrypt";
-import mongoose, { Document, model, Model, Schema } from "mongoose";
+import bcrypt from 'bcrypt';
+import mongoose, {
+  model,
+  Model,
+  Schema
+} from 'mongoose';
 const SALT_WORK_FACTOR = 10;
 
-export interface IUser extends Document {
+export interface IUser {
   username: string;
   email: string;
   password: string;
@@ -12,7 +16,7 @@ export interface IUser extends Document {
   createdAt: Date;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema = new Schema<IUser>({
   username: {
     type: String,
     required: true,

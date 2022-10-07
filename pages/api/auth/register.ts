@@ -1,7 +1,8 @@
-import { connectToDatabase } from "./../../../lib/database/index";
-import { createRouter } from "next-connect";
-import { ResponseError } from "../../../types";
-import { User } from "../../../lib/database/models/User";
+import { connectToDatabase } from './../../../lib/database/index';
+import { createRouter } from 'next-connect';
+import { IUser, User } from '../../../lib/database/models/User';
+import { lang } from '../../../constants/lang';
+import { ResponseError } from '../../../types';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -25,25 +26,38 @@ router
 
     if (password !== passwordConfirm) {
       const error: ResponseError = {
-        message: "Les mots de passe ne sont pas identiques.",
+        message: lang.passwordNotMatch.fr,
       };
       return res.status(500).json(error);
     }
 
-    const user = {
+    const user: IUser = {
       username,
       email,
       password,
       country,
       city,
+      isVerified: true,
+      createdAt: new Date()
     };
+
+
+    /* We check if the username is already taken */
+    const existingUser = await User.findOne({ username: username });
+    if (existingUser) {
+      const error: ResponseError = {
+        message: lang.usernameAlreadyTaken.fr
+      };
+      return res.status(500).json(error);
+    }
+
     try {
       const newUser = new User(user);
       const saved = await newUser.save();
       return res.status(200).json(saved);
     } catch (err) {
       const error: ResponseError = {
-        message: "Une erreur est survenue: " + JSON.stringify(err),
+        message: `${lang.errorOccurred}" - "${JSON.stringify(err)}`,
       };
       return res.status(500).json(error);
     }
