@@ -1,13 +1,13 @@
-import classNames from 'classnames';
-import Container from '../Container';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Disclosure } from '@headlessui/react';
-import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { routes } from '../../../routes';
-import { useRouter } from 'next/router';
-import { useTheme } from '../../../hooks/useTheme';
+import classNames from "classnames";
+import Container from "../Container";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React from "react";
+import { Disclosure } from "@headlessui/react";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { routes } from "../../../routes";
+import { useRouter } from "next/router";
+import { useTheme } from "../../../hooks/useTheme";
 
 type NavbarProps = {
   //
@@ -15,7 +15,8 @@ type NavbarProps = {
 
 const navigation = [
   { name: "Home", href: routes.home },
-  { name: "Page 1", href: routes.page1 },
+  { name: "Login", href: routes.login },
+  { name: "Register", href: routes.register },
 ];
 
 const Navbar: React.FC<NavbarProps> = () => {
