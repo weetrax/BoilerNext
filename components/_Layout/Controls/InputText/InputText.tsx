@@ -4,11 +4,13 @@ import PropTypes from "prop-types";
 
 interface InputTextProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: "primary" | "success" | "error";
+  label?: string;
   additionnalClassname?: string;
 }
 
 const InputText: React.FC<InputTextProps> = ({
   variant = "primary",
+  label,
   additionnalClassname,
   ...props
 }) => {
@@ -27,7 +29,16 @@ const InputText: React.FC<InputTextProps> = ({
 
   if (props.className) classname = props.className;
 
-  return <input className={classname} {...props}></input>;
+  return label ? (
+    <div className="space-y-1">
+      <label className="block text-sm font-medium" htmlFor={props.id}>
+        {label}
+      </label>
+      <input className={classname} {...props}></input>
+    </div>
+  ) : (
+    <input className={classname} {...props}></input>
+  );
 };
 
 InputText.propTypes = {

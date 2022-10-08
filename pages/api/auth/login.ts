@@ -34,7 +34,7 @@ router
       }
       if (!user) {
         error.message = lang.passwordInvalid.fr;
-        return res.status(500).json(error);
+        return res.status(400).json(error);
       }
 
       // test a matching password
@@ -45,7 +45,7 @@ router
         }
         if (!isMatch) {
           error.message = lang.passwordInvalid.fr;
-          return res.status(500).json(error);
+          return res.status(400).json(error);
         } else {
           res.status(200).json(user);
         }

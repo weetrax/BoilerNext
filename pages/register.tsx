@@ -1,45 +1,71 @@
-import axios, { AxiosError } from 'axios';
-import Container from '../components/_Layout/Container';
-import Head from 'next/head';
-import InputText from '../components/_Layout/Controls/InputText';
-import toast from 'react-hot-toast';
-import { FormEvent, useState } from 'react';
-import { lang } from '../constants/lang';
+import axios, { AxiosError } from "axios";
+import Container from "../components/_Layout/Container";
+import Head from "next/head";
+import InputText from "../components/_Layout/Controls/InputText";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { FormEvent, useState } from "react";
+import { lang } from "../constants/lang";
+import { routes } from "../routes";
 import type { NextPage } from "next";
+import handler from "./api/hello";
+import { IUser } from "../lib/database/models/User";
+import { ResponseError } from "../types";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
-const Home: NextPage = () => {
+enum StepEnum {
+  INFO = 1,
+  MORE = 2,
+  VERIF = 3,
+}
+
+const Register: NextPage = () => {
+  /* Hooks */
+  const { user, setUser } = useCurrentUser();
+
   /* States */
+  const [step, setStep] = useState<number>(StepEnum.INFO);
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordConfirm, setPasswordConfirm] = useState<string>("");
   const [country, setCountry] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const [zipCode, setZipCode] = useState<string>("");
+  const [tel, setTel] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (
+    e: FormEvent,
+    callback: (user: IUser | null, err?: ResponseError) => void
+  ) => {
     e.preventDefault();
-    const toastRegister = toast.loading(lang.registerLoading.fr)
+    const toastRegister = toast.loading(lang.registerLoading.fr);
     setLoading(true);
     axios
       .post("/api/auth/register", {
         username,
         email,
-        city,
-        country,
         password,
         passwordConfirm: passwordConfirm,
+        country,
+        city,
+        zipCode,
+        tel,
       })
       .then((response) => {
         toast.success(lang.registerOK.fr, {
-          id: toastRegister
-        })
+          id: toastRegister,
+        });
+        callback(response.data, undefined);
       })
       .catch((err: AxiosError<any, any>) => {
         toast.error(err.response?.data.message, {
-          id: toastRegister
+          id: toastRegister,
         });
+        callback(null, err);
       })
       .finally(() => {
         setLoading(false);
@@ -49,128 +75,278 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>BoilerNext - {lang.createAccount.fr}</title>
+        <title>BoilerNext - {lang.login.fr}</title>
         <meta
           name="description"
           content="BoilerNext - A NextJS - Tailwind - Typescript Boilerplate"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container>
-        <div className="my-8">
-          <div className="bg-white dark:bg-dark-600 max-w-3xl mx-auto flex flex-col gap-6 items-center border border-gray-300 dark:border-dark-700 py-12">
-            <h1 className="text-2xl font-bold">{lang.createAccount.fr}</h1>
-            <form
-              onSubmit={handleSubmit}
-              className="grid grid-cols-2 gap-4 w-full px-12"
-            >
-              <div className="col-span-2">
-                <label className="block mb-1 font-semibold" htmlFor="username">
-                  {lang.username.fr}
-                </label>
-                <InputText
-                  type={"text"}
-                  value={username}
-                  required
-                  name="username"
-                  id="username"
-                  onChange={(e) => setUsername(e.target.value)}
-                  additionnalClassname="w-full"
-                />
-              </div>
-              <div className="col-span-2">
-                <label className="block mb-1 font-semibold" htmlFor="email">
-                  {lang.email.fr}
-                </label>
-                <InputText
-                  type={"email"}
-                  value={email}
-                  required
-                  name="email"
-                  id="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  additionnalClassname="w-full"
-                />
-              </div>
+      <div className="min-h-main flex">
+        <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <div className="mx-auto w-full max-w-sm lg:w-96">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl font-extrabold">{lang.register.fr}</h2>
+              <p>
+                Inscrivez-vous pour profiter de toutes nos fonctionnalités !{" "}
+                <Link href={routes.login}>
+                  <a className="font-medium text-primary-500 hover:text-primary-400 transition-colors duration-200 ease-in-out">
+                    {lang.alreadyHaveAccount.fr}
+                  </a>
+                </Link>
+              </p>
+            </div>
 
-              <div className="col-span-2 md:col-span-1">
-                <label className="block mb-1 font-semibold" htmlFor="city">
-                  {lang.city.fr}
-                </label>
-                <InputText
-                  type={"text"}
-                  value={city}
-                  name="city"
-                  id="city"
-                  required
-                  onChange={(e) => setCity(e.target.value)}
-                  additionnalClassname="w-full"
-                ></InputText>
-              </div>
-              <div className="col-span-2 md:col-span-1">
-                <label className="block mb-1 font-semibold" htmlFor="country">
-                  {lang.country.fr}
-                </label>
-                <InputText
-                  type={"text"}
-                  value={country}
-                  name="country"
-                  additionnalClassname="w-full"
-                  id="country"
-                  required
-                  onChange={(e) => setCountry(e.target.value)}
-                ></InputText>
-              </div>
-              <div className="col-span-2">
-                <label className="block mb-1 font-semibold" htmlFor="password">
-                  {lang.password.fr}
-                </label>
-                <InputText
-                  type={"password"}
-                  value={password}
-                  name="password"
-                  id="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  additionnalClassname="w-full"
-                />
-              </div>
-              <div className="col-span-2">
-                <label className="block mb-1 font-semibold" htmlFor="username">
-                  {lang.passwordConfirm.fr}
-                </label>
-                <InputText
-                  type={"password"}
-                  required
-                  onChange={(e) => setPasswordConfirm(e.target.value)}
-                  value={passwordConfirm}
-                  name="passwordConfirm"
-                  id="passwordConfirm"
-                  additionnalClassname="w-full"
-                />
-
-                {password !== passwordConfirm && (
-                  <p className="text-red-500">
-                    {
-                      lang.passwordNotMatch.fr
-                    }
-                  </p>
+            <div className="mt-8">
+              <div className="mt-6">
+                {step === StepEnum.INFO ? (
+                  <Step1
+                    step={step}
+                    setStep={setStep}
+                    username={username}
+                    setUsername={setUsername}
+                    email={email}
+                    setEmail={setEmail}
+                    password={password}
+                    setPassword={setPassword}
+                  />
+                ) : (
+                  step === StepEnum.MORE && (
+                    <Step2
+                      step={step}
+                      setStep={setStep}
+                      country={country}
+                      setCountry={setCountry}
+                      city={city}
+                      setCity={setCity}
+                      zipCode={zipCode}
+                      setZipcode={setZipCode}
+                      tel={tel}
+                      setTel={setTel}
+                      formHandler={handleSubmit}
+                      setUser={setUser}
+                    />
+                  )
                 )}
               </div>
-              <div className="col-span-2 flex justify-end">
-                <button
-                  className="px-3 py-2 rounded-xl bg-primary-500 text-white"
-                  type={"submit"}
-                >
-                  {lang.register.fr} {loading && <>...</>}
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
-      </Container>
+        <div className="hidden md:block relative w-0 flex-1">
+          <img
+            className="absolute inset-0 h-full w-full object-cover"
+            src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
+            alt=""
+          />
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Home;
+type StepProps = {
+  step: number;
+  setStep: (step: number) => void;
+};
+
+interface Step1Props extends StepProps {
+  username: string;
+  setUsername: (username: string) => void;
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+}
+
+const Step1: React.FC<Step1Props> = ({
+  step,
+  setStep,
+  username,
+  setUsername,
+  email,
+  setEmail,
+  password,
+  setPassword,
+}) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    //Check email validity
+    axios
+      .get("/api/auth/checkunicity", {
+        params: {
+          username,
+          email,
+        },
+      })
+      .then((response) => {
+        setStep(step + 1);
+      })
+      .catch((err: AxiosError<any, any>) => {
+        toast.error(err.response?.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <InputText
+        type={"email"}
+        value={email}
+        required
+        label={lang.email.fr}
+        name="email"
+        id="email"
+        onChange={(e) => setEmail(e.target.value)}
+        additionnalClassname="w-full"
+      />
+      <InputText
+        type={"text"}
+        value={username}
+        required
+        label={lang.username.fr}
+        name="username"
+        id="username"
+        onChange={(e) => setUsername(e.target.value)}
+        additionnalClassname="w-full"
+      />
+      <InputText
+        type={"password"}
+        value={password}
+        label={lang.password.fr}
+        name="password"
+        id="password"
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        additionnalClassname="w-full"
+      />
+
+      <div className="flex items-center justify-end">
+        <div className="text-sm">
+          <Link href={routes.login}>
+            <a className="font-medium text-primary-500 hover:text-primary-400 transition-colors duration-200 ease-in-out">
+              {lang.alreadyHaveAccount.fr}
+            </a>
+          </Link>
+        </div>
+      </div>
+
+      <div>
+        <button
+          className="px-3 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 text-white w-full transition-colors duration-200 ease-in-out"
+          type={"submit"}
+        >
+          {loading ? lang.registerLoading.fr : lang.register.fr}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+interface Step2Props extends StepProps {
+  country: string;
+  setCountry: (country: string) => void;
+  city: string;
+  setCity: (city: string) => void;
+  zipCode: string;
+  setZipcode: (zipCode: string) => void;
+  tel: string;
+  setTel: (tel: string) => void;
+  formHandler: (
+    e: FormEvent,
+    callback: (user: IUser | null, err?: ResponseError) => void
+  ) => void;
+  setUser: (user: IUser | null) => void;
+}
+
+const Step2: React.FC<Step2Props> = ({
+  city,
+  setCity,
+  country,
+  setCountry,
+  zipCode,
+  setZipcode,
+  tel,
+  setTel,
+  formHandler,
+  setUser,
+}) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    formHandler(e, (user, err) => {
+      if (err) toast.error(err.message);
+      setLoading(false);
+      setUser(user);
+    });
+  };
+
+  return (
+    <>
+      <form
+        onChange={() => setError(null)}
+        onSubmit={handleSubmit}
+        className="space-y-5"
+      >
+        <InputText
+          type={"text"}
+          value={country}
+          required
+          label={lang.country.fr}
+          name="country"
+          id="country"
+          onChange={(e) => setCountry(e.target.value)}
+          additionnalClassname="w-full"
+        />
+        <InputText
+          type={"text"}
+          value={city}
+          required
+          label={lang.city.fr}
+          name="city"
+          id="city"
+          onChange={(e) => setCity(e.target.value)}
+          additionnalClassname="w-full"
+        />
+        <InputText
+          type={"text"}
+          value={zipCode}
+          required
+          label={lang.zipCode.fr}
+          name="zipCode"
+          id="zipCode"
+          onChange={(e) => setZipcode(e.target.value)}
+          additionnalClassname="w-full"
+        />
+        <InputText
+          type={"tel"}
+          value={tel}
+          required
+          label={lang.tel.fr}
+          name="tel"
+          id="tel"
+          onChange={(e) => setTel(e.target.value)}
+          additionnalClassname="w-full"
+        />
+
+        <div>
+          <button
+            className="px-3 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 text-white w-full transition-colors duration-200 ease-in-out"
+            type={"submit"}
+          >
+            {loading ? lang.validating.fr : lang.validate.fr}
+          </button>
+        </div>
+      </form>
+    </>
+  );
+};
+
+export default Register;

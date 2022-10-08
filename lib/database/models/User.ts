@@ -1,9 +1,5 @@
-import bcrypt from 'bcrypt';
-import mongoose, {
-  model,
-  Model,
-  Schema
-} from 'mongoose';
+import bcrypt from "bcrypt";
+import mongoose, { model, Model, Schema } from "mongoose";
 const SALT_WORK_FACTOR = 10;
 
 export interface IUser {
@@ -12,6 +8,9 @@ export interface IUser {
   password: string;
   country: string;
   city: string;
+  zipCode: string;
+  tel: string;
+  isAdmin: boolean;
   isVerified: boolean;
   createdAt: Date;
 }
@@ -31,11 +30,19 @@ const UserSchema: Schema = new Schema<IUser>({
   },
   country: {
     type: String,
-    required: true,
   },
   city: {
     type: String,
-    required: true,
+  },
+  zipCode: {
+    type: String,
+  },
+  tel: {
+    type: String,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
   isVerified: {
     type: Boolean,
