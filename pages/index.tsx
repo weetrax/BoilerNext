@@ -1,8 +1,10 @@
 import Container from '../components/_Layout/Container';
 import Head from 'next/head';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import type { NextPage } from 'next'
 
 const Home: NextPage = () => {
+  const { user } = useCurrentUser()
   return (
     <div>
       <Head>
@@ -12,7 +14,7 @@ const Home: NextPage = () => {
       </Head>
       <Container>
         <div className='my-8'>
-          <h1 className='text-2xl font-bold'>Hello Next.js</h1>
+          <h1 className='text-2xl font-bold'>Hello {user ? user.username : "Next.js"}</h1>
         </div>
       </Container>
     </div>

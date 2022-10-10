@@ -1,4 +1,8 @@
 export const lang = {
+  home: {
+    fr: "Accueil",
+    en: "Home"
+  },
   username: {
     fr: "Nom d'utilisateur",
     en: "Username",
@@ -54,6 +58,14 @@ export const lang = {
   loginOK: {
     fr: "Vous êtes maintenant connecté !",
     en: "You are now logged !",
+  },
+  logout: {
+    fr: "Se déconnecter",
+    en: "Sign out"
+  },
+  logoutLoading: {
+    fr: "Déconnexion en cours...",
+    en: "Sign out..."
   },
   register: {
     fr: "S'inscrire",

@@ -1,13 +1,15 @@
-import axios, { AxiosError } from "axios";
-import Container from "../components/_Layout/Container";
-import Head from "next/head";
-import InputText from "../components/_Layout/Controls/InputText";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { FormEvent, useState } from "react";
-import { lang } from "../constants/lang";
-import { routes } from "../routes";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import axios, { AxiosError } from 'axios';
+import Head from 'next/head';
+import InputText from '../components/_Layout/Controls/InputText';
+import Link from 'next/link';
+import Router from 'next/router';
+import toast from 'react-hot-toast';
+import { apiRoutes, routes } from '../routes';
+import { FormEvent, useState } from 'react';
+import { ironOptions } from '../lib/session';
+import { lang } from '../constants/lang';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { withIronSessionSsr } from 'iron-session/next';
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
@@ -29,7 +31,7 @@ const Home: NextPage = () => {
       //id: "toastLogin"
     });
     axios
-      .post("/api/auth/login", {
+      .post(apiRoutes.login, {
         email,
         password,
       })
@@ -50,6 +52,8 @@ const Home: NextPage = () => {
         setLoading(false);
       });
   };
+
+  if (user) Router.push(routes.home)
 
   return (
     <div>
@@ -140,5 +144,28 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req }) {
+    console.log(req.session)
+    const user = req.session.user;
+
+    if (user !== undefined) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        }
+      };
+    }
+
+    return {
+      props: {
+        //user: req.session.user,
+      },
+    };
+  },
+  ironOptions,
+);
 
 export default Home;

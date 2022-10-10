@@ -1,17 +1,18 @@
-import axios, { AxiosError } from "axios";
-import Container from "../components/_Layout/Container";
-import Head from "next/head";
-import InputText from "../components/_Layout/Controls/InputText";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { FormEvent, useState } from "react";
-import { lang } from "../constants/lang";
-import { routes } from "../routes";
+import axios, { AxiosError } from 'axios';
+import Head from 'next/head';
+import InputText from '../components/_Layout/Controls/InputText';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { apiRoutes, routes } from '../routes';
+import { FormEvent, useState } from 'react';
+import { ironOptions } from '../lib/session';
+import { IUser } from '../lib/database/models/User';
+import { lang } from '../constants/lang';
+import { ResponseError } from '../types';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { withIronSessionSsr } from 'iron-session/next';
 import type { NextPage } from "next";
-import handler from "./api/hello";
-import { IUser } from "../lib/database/models/User";
-import { ResponseError } from "../types";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import Router from 'next/router';
 
 enum StepEnum {
   INFO = 1,
@@ -45,7 +46,7 @@ const Register: NextPage = () => {
     const toastRegister = toast.loading(lang.registerLoading.fr);
     setLoading(true);
     axios
-      .post("/api/auth/register", {
+      .post(apiRoutes.register, {
         username,
         email,
         password,
@@ -71,6 +72,8 @@ const Register: NextPage = () => {
         setLoading(false);
       });
   };
+
+  if (user) Router.push(routes.home)
 
   return (
     <div>
@@ -175,7 +178,7 @@ const Step1: React.FC<Step1Props> = ({
     setLoading(true);
     //Check email validity
     axios
-      .get("/api/auth/checkunicity", {
+      .get(apiRoutes.checkunicity, {
         params: {
           username,
           email,
@@ -348,5 +351,28 @@ const Step2: React.FC<Step2Props> = ({
     </>
   );
 };
+
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req }) {
+    console.log(req.session)
+    const user = req.session.user;
+
+    if (user !== undefined) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        }
+      };
+    }
+
+    return {
+      props: {
+        //user: req.session.user,
+      },
+    };
+  },
+  ironOptions,
+);
 
 export default Register;

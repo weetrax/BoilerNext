@@ -27,6 +27,7 @@
     "axios": "^1.0.0",
     "bcrypt": "^5.0.1",
     "classnames": "^2.3.1",
+    "iron-session": "^6.2.1",
     "is-empty": "^1.2.0",
     "mongoose": "^6.6.5",
     "next": "12.2.3",

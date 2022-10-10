@@ -1,27 +1,39 @@
-import classNames from "classnames";
-import Container from "../Container";
-import Link from "next/link";
-import PropTypes from "prop-types";
-import React from "react";
-import { Disclosure } from "@headlessui/react";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import { routes } from "../../../routes";
-import { useRouter } from "next/router";
-import { useTheme } from "../../../hooks/useTheme";
+import classNames from 'classnames';
+import Container from '../Container';
+import Link from 'next/link';
+import PropTypes from 'prop-types';
+import React, { Fragment, useState } from 'react';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { lang } from '../../../constants/lang';
+import { MenuIcon, XIcon } from '@heroicons/react/outline';
+import { routes } from '../../../routes';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { useRouter } from 'next/router';
+import { useTheme } from '../../../hooks/useTheme';
 
 type NavbarProps = {
   //
 };
 
 const navigation = [
-  { name: "Home", href: routes.home },
-  { name: "Login", href: routes.login },
-  { name: "Register", href: routes.register },
+  { name: lang.home.fr, href: routes.home },
+  { name: lang.login.fr, href: routes.login },
+  { name: lang.register.fr, href: routes.register },
 ];
 
 const Navbar: React.FC<NavbarProps> = () => {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useCurrentUser();
+
+  const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    setLogoutLoading(true);
+    logout((err) => {
+      setLogoutLoading(false)
+    })
+  }
 
   return (
     <Disclosure
@@ -78,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              <div className="flex items-center">
                 <button
                   onClick={toggleTheme}
                   type="button"
@@ -118,6 +130,44 @@ const Navbar: React.FC<NavbarProps> = () => {
                     </svg>
                   )}
                 </button>
+                {/* Profile dropdown */}
+                {
+                  user &&
+                  <Menu as="div" className="relative ml-3">
+                    <div>
+                      <Menu.Button className="flex rounded-full text-sm focus:outline-none">
+                        <span className="sr-only">Open user menu</span>
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          alt=""
+                        />
+                      </Menu.Button>
+                    </div>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-dark-500 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={handleLogout}
+                              className={classNames(active ? 'bg-gray-50 dark:bg-dark-600' : '', 'block px-4 py-2 text-sm w-full text-left')}
+                            >
+                              {logoutLoading ? lang.logoutLoading.fr : lang.logout.fr}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                }
               </div>
             </div>
           </Container>
