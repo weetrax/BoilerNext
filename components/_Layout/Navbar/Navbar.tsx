@@ -1,15 +1,15 @@
-import classNames from 'classnames';
-import Container from '../Container';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
-import React, { Fragment, useState } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { lang } from '../../../constants/lang';
-import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { routes } from '../../../routes';
-import { useCurrentUser } from '../../../hooks/useCurrentUser';
-import { useRouter } from 'next/router';
-import { useTheme } from '../../../hooks/useTheme';
+import classNames from "classnames";
+import Container from "../Container";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React, { Fragment, useState } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { lang } from "../../../constants/lang";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { routes } from "../../../routes";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { useRouter } from "next/router";
+import { useTheme } from "../../../hooks/useTheme";
 
 type NavbarProps = {
   //
@@ -31,9 +31,9 @@ const Navbar: React.FC<NavbarProps> = () => {
   const handleLogout = () => {
     setLogoutLoading(true);
     logout((err) => {
-      setLogoutLoading(false)
-    })
-  }
+      setLogoutLoading(false);
+    });
+  };
 
   return (
     <Disclosure
@@ -131,8 +131,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                   )}
                 </button>
                 {/* Profile dropdown */}
-                {
-                  user &&
+                {user && (
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <Menu.Button className="flex rounded-full text-sm focus:outline-none">
@@ -158,16 +157,21 @@ const Navbar: React.FC<NavbarProps> = () => {
                           {({ active }) => (
                             <button
                               onClick={handleLogout}
-                              className={classNames(active ? 'bg-gray-50 dark:bg-dark-600' : '', 'block px-4 py-2 text-sm w-full text-left')}
+                              className={classNames(
+                                active ? "bg-gray-50 dark:bg-dark-600" : "",
+                                "block px-4 py-2 text-sm w-full text-left"
+                              )}
                             >
-                              {logoutLoading ? lang.logoutLoading.fr : lang.logout.fr}
+                              {logoutLoading
+                                ? lang.logoutLoading.fr
+                                : lang.logout.fr}
                             </button>
                           )}
                         </Menu.Item>
                       </Menu.Items>
                     </Transition>
                   </Menu>
-                }
+                )}
               </div>
             </div>
           </Container>

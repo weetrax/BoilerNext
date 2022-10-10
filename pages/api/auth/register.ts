@@ -1,25 +1,15 @@
-import isEmpty from "is-empty";
 import { connectToDatabase } from "./../../../lib/database/index";
-import { createRouter } from "next-connect";
-import { IUser, User } from "../../../lib/database/models/User";
+import { ironOptions } from "../../../lib/session";
 import { lang } from "../../../constants/lang";
 import { ResponseError } from "../../../types";
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
+import { IUser, User } from "../../../lib/database/models/User";
+import { withIronSessionApiRoute } from "iron-session/next";
+import isEmpty from "is-empty";
 
-// Default Req and Res are IncomingMessage and ServerResponse
-// You may want to pass in NextApiRequest and NextApiResponse
-const router = createRouter<NextApiRequest, NextApiResponse>();
+export default withIronSessionApiRoute(async function loginRoute(req, res) {
+  // get user from database then:
 
-router
-  //.use(expressWrapper(cors())) // express middleware are supported if you wrap it with expressWrapper
-  .use(async (req, res, next) => {
-    const start = Date.now();
-    await next(); // call next in chain
-    const end = Date.now();
-    console.log(`Request took ${end - start}ms`);
-  })
-  .post(async (req, res) => {
+  if (req.method === "POST") {
     const { username, email, password } = req.body;
     let error: ResponseError = {
       message: "",
@@ -62,11 +52,13 @@ router
     try {
       const newUser = new User(user);
       const saved = await newUser.save();
+      req.session.user = saved;
+
+      await req.session.save();
       return res.status(200).json(saved);
     } catch (err) {
       error.message = `${lang.errorOccurred}" - "${JSON.stringify(err)}`;
       return res.status(500).json(error);
     }
-  });
-
-export default router.handler();
+  }
+}, ironOptions);
