@@ -6,7 +6,7 @@ import { IUser, User } from "../../../lib/database/models/User";
 import { withIronSessionApiRoute } from "iron-session/next";
 import isEmpty from "is-empty";
 
-export default withIronSessionApiRoute(async function loginRoute(req, res) {
+export default withIronSessionApiRoute(async function registerRoute(req, res) {
   // get user from database then:
 
   if (req.method === "POST") {
