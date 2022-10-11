@@ -1,19 +1,18 @@
 import bcrypt from "bcrypt";
 import mongoose, { model, Model, Schema } from "mongoose";
+import { ICountry } from "./../../../types";
+import { IUser } from "../../../types";
 const SALT_WORK_FACTOR = 10;
 
-export interface IUser {
-  username: string;
-  email: string;
-  password: string;
-  country: string;
-  city: string;
-  zipCode: string;
-  tel: string;
-  isAdmin: boolean;
-  isVerified: boolean;
-  createdAt: Date;
-}
+const CountrySchema: Schema = new Schema<ICountry>({
+  code: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+  },
+});
 
 const UserSchema: Schema = new Schema<IUser>({
   username: {
@@ -28,9 +27,7 @@ const UserSchema: Schema = new Schema<IUser>({
     type: String,
     required: true,
   },
-  country: {
-    type: String,
-  },
+  country: CountrySchema,
   city: {
     type: String,
   },

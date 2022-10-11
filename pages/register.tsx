@@ -1,18 +1,20 @@
-import axios, { AxiosError } from 'axios';
-import Head from 'next/head';
-import InputText from '../components/_Layout/Controls/InputText';
-import Link from 'next/link';
-import toast from 'react-hot-toast';
-import { apiRoutes, routes } from '../routes';
-import { FormEvent, useState } from 'react';
-import { ironOptions } from '../lib/session';
-import { IUser } from '../lib/database/models/User';
-import { lang } from '../constants/lang';
-import { ResponseError } from '../types';
-import { useCurrentUser } from '../hooks/useCurrentUser';
-import { withIronSessionSsr } from 'iron-session/next';
+import axios, { AxiosError } from "axios";
+import Button from "../components/_Layout/Controls/Button";
+import countriesJson from "../constants/countries.json";
+import Head from "next/head";
+import InputText from "../components/_Layout/Controls/InputText";
+import Link from "next/link";
+import Router from "next/router";
+import SelectCountry from "../components/_Layout/Controls/SelectCountry";
+import toast from "react-hot-toast";
+import { apiRoutes, routes } from "../routes";
+import { FormEvent, useState } from "react";
+import { ironOptions } from "../lib/session";
+import { IUser, ResponseError, SelectCountryOption } from "../types";
+import { lang } from "../constants/lang";
+import { useCurrentUser } from "../hooks/useCurrentUser";
+import { withIronSessionSsr } from "iron-session/next";
 import type { NextPage } from "next";
-import Router from 'next/router';
 
 enum StepEnum {
   INFO = 1,
@@ -30,7 +32,20 @@ const Register: NextPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordConfirm, setPasswordConfirm] = useState<string>("");
-  const [country, setCountry] = useState<string>("");
+  /* Default France Country */
+  const [country, setCountry] = useState<SelectCountryOption | undefined>(
+    countriesJson.find((x) => x.code.toUpperCase() === "FR")
+      ? {
+          label: countriesJson.find((x) => x.code.toUpperCase() === "FR")
+            ?.name!!,
+          value: countriesJson.find((x) => x.code.toUpperCase() === "FR")
+            ?.code!!,
+          plainObject: countriesJson.find(
+            (x) => x.code.toUpperCase() === "FR"
+          )!!,
+        }
+      : undefined
+  );
   const [city, setCity] = useState<string>("");
   const [zipCode, setZipCode] = useState<string>("");
   const [tel, setTel] = useState<string>("");
@@ -51,7 +66,7 @@ const Register: NextPage = () => {
         email,
         password,
         passwordConfirm: passwordConfirm,
-        country,
+        country: country?.plainObject,
         city,
         zipCode,
         tel,
@@ -73,7 +88,7 @@ const Register: NextPage = () => {
       });
   };
 
-  if (user) Router.push(routes.home)
+  if (user) Router.push(routes.home);
 
   return (
     <div>
@@ -239,20 +254,17 @@ const Step1: React.FC<Step1Props> = ({
       </div>
 
       <div>
-        <button
-          className="px-3 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 text-white w-full transition-colors duration-200 ease-in-out"
-          type={"submit"}
-        >
+        <Button disabled={loading} type={"submit"}>
           {loading ? lang.registerLoading.fr : lang.register.fr}
-        </button>
+        </Button>
       </div>
     </form>
   );
 };
 
 interface Step2Props extends StepProps {
-  country: string;
-  setCountry: (country: string) => void;
+  country: SelectCountryOption | undefined;
+  setCountry: (country: SelectCountryOption) => void;
   city: string;
   setCity: (city: string) => void;
   zipCode: string;
@@ -285,7 +297,6 @@ const Step2: React.FC<Step2Props> = ({
     e.preventDefault();
     setLoading(true);
     formHandler(e, (user, err) => {
-      if (err) toast.error(err.message);
       setLoading(false);
       setUser(user);
     });
@@ -298,15 +309,9 @@ const Step2: React.FC<Step2Props> = ({
         onSubmit={handleSubmit}
         className="space-y-5"
       >
-        <InputText
-          type={"text"}
+        <SelectCountry
+          onChange={(option: any) => setCountry(option)}
           value={country}
-          required
-          label={lang.country.fr}
-          name="country"
-          id="country"
-          onChange={(e) => setCountry(e.target.value)}
-          additionnalClassname="w-full"
         />
         <InputText
           type={"text"}
@@ -340,12 +345,9 @@ const Step2: React.FC<Step2Props> = ({
         />
 
         <div>
-          <button
-            className="px-3 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 text-white w-full transition-colors duration-200 ease-in-out"
-            type={"submit"}
-          >
+          <Button type={"submit"} disabled={loading}>
             {loading ? lang.validating.fr : lang.validate.fr}
-          </button>
+          </Button>
         </div>
       </form>
     </>
@@ -354,7 +356,7 @@ const Step2: React.FC<Step2Props> = ({
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    console.log(req.session)
+    console.log(req.session);
     const user = req.session.user;
 
     if (user !== undefined) {
@@ -362,7 +364,7 @@ export const getServerSideProps = withIronSessionSsr(
         redirect: {
           destination: "/",
           permanent: false,
-        }
+        },
       };
     }
 
@@ -372,7 +374,7 @@ export const getServerSideProps = withIronSessionSsr(
       },
     };
   },
-  ironOptions,
+  ironOptions
 );
 
 export default Register;

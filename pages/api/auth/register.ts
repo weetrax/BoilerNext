@@ -1,16 +1,18 @@
-import { connectToDatabase } from "./../../../lib/database/index";
-import { ironOptions } from "../../../lib/session";
-import { lang } from "../../../constants/lang";
-import { ResponseError } from "../../../types";
-import { IUser, User } from "../../../lib/database/models/User";
-import { withIronSessionApiRoute } from "iron-session/next";
+import countriesJson from "../../../constants/countries.json";
 import isEmpty from "is-empty";
+import { connectToDatabase } from "./../../../lib/database/index";
+import { ICountry } from "./../../../types";
+import { ironOptions } from "../../../lib/session";
+import { IUser, ResponseError } from "../../../types";
+import { lang } from "../../../constants/lang";
+import { User } from "../../../lib/database/models/User";
+import { withIronSessionApiRoute } from "iron-session/next";
 
 export default withIronSessionApiRoute(async function registerRoute(req, res) {
   // get user from database then:
 
   if (req.method === "POST") {
-    const { username, email, password } = req.body;
+    let { username, email, password, city, country, zipCode, tel } = req.body;
     let error: ResponseError = {
       message: "",
     };
@@ -22,18 +24,21 @@ export default withIronSessionApiRoute(async function registerRoute(req, res) {
 
     connectToDatabase();
 
-    const user: IUser = {
-      username,
-      email,
-      password,
-      country: "",
-      city: "",
-      zipCode: "",
-      tel: "",
-      isAdmin: false,
-      isVerified: false,
-      createdAt: new Date(),
-    };
+    /* Check country validity */
+    if (
+      !isEmpty(country) &&
+      (country as ICountry).code &&
+      !isEmpty((country as ICountry).code)
+    ) {
+      if (countriesJson.find((x) => x.code === (country as ICountry).code)) {
+        country = countriesJson.find(
+          (x) => x.code === (country as ICountry).code
+        );
+      }
+    } else {
+      error.message = lang.invalidCountry.fr;
+      return res.status(400).json(error);
+    }
 
     /* Check if the username is already taken */
     const existingUsername = await User.findOne({ username: username });
@@ -48,6 +53,19 @@ export default withIronSessionApiRoute(async function registerRoute(req, res) {
       error.message = lang.emailAlreadyTaken.fr;
       return res.status(400).json(error);
     }
+
+    const user: IUser = {
+      username,
+      email,
+      password,
+      country,
+      city,
+      zipCode,
+      tel,
+      isAdmin: false,
+      isVerified: false,
+      createdAt: new Date(),
+    };
 
     try {
       const newUser = new User(user);

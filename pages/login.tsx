@@ -1,20 +1,21 @@
-import axios, { AxiosError } from 'axios';
-import Head from 'next/head';
-import InputText from '../components/_Layout/Controls/InputText';
-import Link from 'next/link';
-import Router from 'next/router';
-import toast from 'react-hot-toast';
-import { apiRoutes, routes } from '../routes';
-import { FormEvent, useState } from 'react';
-import { ironOptions } from '../lib/session';
-import { lang } from '../constants/lang';
-import { useCurrentUser } from '../hooks/useCurrentUser';
-import { withIronSessionSsr } from 'iron-session/next';
+import axios, { AxiosError } from "axios";
+import Button from "../components/_Layout/Controls/Button";
+import Head from "next/head";
+import InputText from "../components/_Layout/Controls/InputText";
+import Link from "next/link";
+import Router from "next/router";
+import toast from "react-hot-toast";
+import { routes } from "../routes";
+import { FormEvent, useState } from "react";
+import { ironOptions } from "../lib/session";
+import { lang } from "../constants/lang";
+import { useCurrentUser } from "../hooks/useCurrentUser";
+import { withIronSessionSsr } from "iron-session/next";
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
   /* Hooks */
-  const { user, setUser } = useCurrentUser();
+  const { user, login } = useCurrentUser();
 
   /* States */
   const [email, setEmail] = useState<string>("");
@@ -30,30 +31,22 @@ const Home: NextPage = () => {
     const toastLogin = toast.loading(lang.loginLoading.fr, {
       //id: "toastLogin"
     });
-    axios
-      .post(apiRoutes.login, {
-        email,
-        password,
-      })
-      .then((response) => {
+    login(email, password, (err) => {
+      if (err) {
+        toast.error(err.message, {
+          id: toastLogin,
+        });
+        setError(err.message);
+      } else {
         toast.success(lang.loginOK.fr, {
           id: toastLogin,
         });
-        console.log(response.data);
-        setUser(response.data);
-      })
-      .catch((err: AxiosError<any, any>) => {
-        toast.error(err.response?.data.message, {
-          id: toastLogin,
-        });
-        setError(err.response?.data.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      }
+      setLoading(false);
+    });
   };
 
-  if (user) Router.push(routes.home)
+  if (user) Router.push(routes.home);
 
   return (
     <div>
@@ -108,7 +101,6 @@ const Home: NextPage = () => {
                     required
                     additionnalClassname="w-full"
                   />
-
                   <div className="flex items-center justify-end">
                     <div className="text-sm">
                       <a
@@ -119,14 +111,10 @@ const Home: NextPage = () => {
                       </a>
                     </div>
                   </div>
-
                   <div>
-                    <button
-                      className="px-3 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 text-white w-full transition-colors duration-200 ease-in-out"
-                      type={"submit"}
-                    >
+                    <Button disabled={loading} type={"submit"}>
                       {lang.login.fr} {loading && <>...</>}
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -147,7 +135,7 @@ const Home: NextPage = () => {
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    console.log(req.session)
+    console.log(req.session);
     const user = req.session.user;
 
     if (user !== undefined) {
@@ -155,7 +143,7 @@ export const getServerSideProps = withIronSessionSsr(
         redirect: {
           destination: "/",
           permanent: false,
-        }
+        },
       };
     }
 
@@ -165,7 +153,7 @@ export const getServerSideProps = withIronSessionSsr(
       },
     };
   },
-  ironOptions,
+  ironOptions
 );
 
 export default Home;

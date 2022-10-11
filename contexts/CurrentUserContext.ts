@@ -1,18 +1,23 @@
 import React from "react";
-import { ResponseError } from "../types";
-import { IUser } from "./../lib/database/models/User";
+import { IUser, ResponseError } from "../types";
 
 type CurrentUserContextType = {
   user: IUser | null;
   setUser: (user: IUser | null) => void;
+  login: (
+    email: string,
+    password: string,
+    callback: (err?: ResponseError) => void
+  ) => void;
   logout: (callback: (err?: ResponseError) => void) => void;
   loading: boolean;
 };
 
 const CurrentUserContext = React.createContext<CurrentUserContextType>({
   user: null,
-  setUser: () => { },
-  logout: () => { },
+  setUser: () => {},
+  login: () => {},
+  logout: () => {},
   loading: true,
 });
 

@@ -1,7 +1,7 @@
 export const lang = {
   home: {
     fr: "Accueil",
-    en: "Home"
+    en: "Home",
   },
   username: {
     fr: "Nom d'utilisateur",
@@ -61,11 +61,11 @@ export const lang = {
   },
   logout: {
     fr: "Se déconnecter",
-    en: "Sign out"
+    en: "Sign out",
   },
   logoutLoading: {
     fr: "Déconnexion en cours...",
-    en: "Sign out..."
+    en: "Sign out...",
   },
   register: {
     fr: "S'inscrire",
@@ -104,6 +104,10 @@ export const lang = {
     en: "This email is already taken.",
   },
   errorOccurred: {
+    fr: "Oups, une erreur est survenue.",
+    en: "Oops, an error occurred.",
+  },
+  invalidCountry: {
     fr: "Oups, une erreur est survenue.",
     en: "Oops, an error occurred.",
   },
