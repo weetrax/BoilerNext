@@ -356,9 +356,7 @@ const Step2: React.FC<Step2Props> = ({
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    console.log(req.session);
     const user = req.session.user;
-
     if (user !== undefined) {
       return {
         redirect: {

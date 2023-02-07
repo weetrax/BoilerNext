@@ -17,7 +17,7 @@ router
     const start = Date.now();
     await next(); // call next in chain
     const end = Date.now();
-    console.log(`Request took ${end - start}ms`);
+    //console.log(`Request took ${end - start}ms`);
   })
   .get(async (req, res) => {
     const { email, username } = req.query;

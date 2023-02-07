@@ -1,14 +1,13 @@
-import axios, { AxiosError } from "axios";
 import Button from "../components/_Layout/Controls/Button";
 import Head from "next/head";
 import InputText from "../components/_Layout/Controls/InputText";
 import Link from "next/link";
 import Router from "next/router";
 import toast from "react-hot-toast";
-import { routes } from "../routes";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { ironOptions } from "../lib/session";
 import { lang } from "../constants/lang";
+import { routes } from "../routes";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { withIronSessionSsr } from "iron-session/next";
 import type { NextPage } from "next";
@@ -18,8 +17,8 @@ const Home: NextPage = () => {
   const { user, login } = useCurrentUser();
 
   /* States */
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const refEmail = useRef<HTMLInputElement>(null);
+  const refPassword = useRef<HTMLInputElement>(null);
 
   /* Loading & Error State */
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,19 +30,23 @@ const Home: NextPage = () => {
     const toastLogin = toast.loading(lang.loginLoading.fr, {
       //id: "toastLogin"
     });
-    login(email, password, (err) => {
-      if (err) {
-        toast.error(err.message, {
-          id: toastLogin,
-        });
-        setError(err.message);
-      } else {
-        toast.success(lang.loginOK.fr, {
-          id: toastLogin,
-        });
+    login(
+      refEmail.current?.value ?? "",
+      refPassword.current?.value ?? "",
+      (err) => {
+        if (err) {
+          toast.error(err.message, {
+            id: toastLogin,
+          });
+          setError(err.message);
+        } else {
+          toast.success(lang.loginOK.fr, {
+            id: toastLogin,
+          });
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    );
   };
 
   if (user) Router.push(routes.home);
@@ -83,21 +86,19 @@ const Home: NextPage = () => {
                 >
                   <InputText
                     type={"email"}
-                    value={email}
+                    ref={refEmail}
                     required
                     label={lang.email.fr}
                     name="email"
                     id="email"
-                    onChange={(e) => setEmail(e.target.value)}
                     additionnalClassname="w-full"
                   />
                   <InputText
                     type={"password"}
-                    value={password}
+                    ref={refPassword}
                     label={lang.password.fr}
                     name="password"
                     id="password"
-                    onChange={(e) => setPassword(e.target.value)}
                     required
                     additionnalClassname="w-full"
                   />
@@ -135,9 +136,7 @@ const Home: NextPage = () => {
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    console.log(req.session);
     const user = req.session.user;
-
     if (user !== undefined) {
       return {
         redirect: {
@@ -146,7 +145,6 @@ export const getServerSideProps = withIronSessionSsr(
         },
       };
     }
-
     return {
       props: {
         //user: req.session.user,
