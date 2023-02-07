@@ -16,9 +16,9 @@ type NavbarProps = {
 };
 
 const navigation = [
-  { name: lang.home.fr, href: routes.home },
-  { name: lang.login.fr, href: routes.login },
-  { name: lang.register.fr, href: routes.register },
+  { name: lang.home.fr, href: routes.home, hideIfAuth: false },
+  { name: lang.login.fr, href: routes.login, hideIfAuth: true },
+  { name: lang.register.fr, href: routes.register, hideIfAuth: true },
 ];
 
 const Navbar: React.FC<NavbarProps> = () => {
@@ -70,23 +70,28 @@ const Navbar: React.FC<NavbarProps> = () => {
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <Link href={item.href} key={item.name}>
-                        <a
-                          className={classNames(
-                            router.pathname == item.href
-                              ? "bg-primary-500 text-white"
-                              : "hover:bg-primary-500 hover:text-white duration-200 ease-in-out transition",
-                            "px-3 py-2 rounded-md text-sm font-medium"
-                          )}
-                          aria-current={
-                            router.pathname == item.href ? "page" : undefined
-                          }
-                        >
-                          {item.name}
-                        </a>
-                      </Link>
-                    ))}
+                    {navigation.map(
+                      (item) =>
+                        ((user && !item.hideIfAuth) || !user) && (
+                          <Link href={item.href} key={item.name}>
+                            <a
+                              className={classNames(
+                                router.pathname == item.href
+                                  ? "bg-primary-500 text-white"
+                                  : "hover:bg-primary-500 hover:text-white duration-200 ease-in-out transition",
+                                "px-3 py-2 rounded-md text-sm font-medium"
+                              )}
+                              aria-current={
+                                router.pathname == item.href
+                                  ? "page"
+                                  : undefined
+                              }
+                            >
+                              {item.name}
+                            </a>
+                          </Link>
+                        )
+                    )}
                   </div>
                 </div>
               </div>
@@ -138,7 +143,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          src="https://i.pravatar.cc/300"
                           alt=""
                         />
                       </Menu.Button>
@@ -178,26 +183,29 @@ const Navbar: React.FC<NavbarProps> = () => {
 
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <Disclosure.Button key={item.name} as="div">
-                  <Link href={item.href} key={item.name}>
-                    <a
-                      className={classNames(
-                        router.pathname == item.href
-                          ? "bg-dark-500"
-                          : "hover:bg-dark-500",
-                        "block px-3 py-2 rounded-md text-base font-medium duration-200 ease-in-out transition"
-                      )}
-                      onClick={() => close()}
-                      aria-current={
-                        router.pathname == item.href ? "page" : undefined
-                      }
-                    >
-                      {item.name}
-                    </a>
-                  </Link>
-                </Disclosure.Button>
-              ))}
+              {navigation.map(
+                (item) =>
+                  ((user && !item.hideIfAuth) || !user) && (
+                    <Disclosure.Button key={item.name} as="div">
+                      <Link href={item.href} key={item.name}>
+                        <a
+                          className={classNames(
+                            router.pathname == item.href
+                              ? "bg-primary-500 text-white"
+                              : "hover:text-primary-500",
+                            "block px-3 py-2 rounded-md text-base font-medium duration-200 ease-in-out transition"
+                          )}
+                          onClick={() => close()}
+                          aria-current={
+                            router.pathname == item.href ? "page" : undefined
+                          }
+                        >
+                          {item.name}
+                        </a>
+                      </Link>
+                    </Disclosure.Button>
+                  )
+              )}
             </div>
           </Disclosure.Panel>
         </>
