@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import mongoose, { model, Model, Schema } from "mongoose";
-import { ICountry } from "./../../../types";
-import { IUser } from "../../../types";
+import { ICountry, IUser } from "./../../../types";
+
 const SALT_WORK_FACTOR = 10;
 
 const CountrySchema: Schema = new Schema<ICountry>({
