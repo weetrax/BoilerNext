@@ -38,12 +38,6 @@ export type SelectCountryOption = {
   plainObject: ICountry;
 };
 
-export type SelectCryptoCurrencyOption = {
-  label: string;
-  value: string;
-  plainObject: ICountry;
-};
-
 export type LanguageCode = "fr" | "en";
 
 export type ResponseError = {
