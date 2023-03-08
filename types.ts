@@ -38,7 +38,10 @@ export type SelectCountryOption = {
   plainObject: ICountry;
 };
 
-export type LanguageCode = "fr" | "en";
+export enum ThemeEnum {
+  dark = "dark",
+  light = "light"
+}
 
 export type ResponseError = {
   message: string;

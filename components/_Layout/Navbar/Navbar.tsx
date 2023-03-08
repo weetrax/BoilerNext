@@ -10,6 +10,7 @@ import { routes } from "../../../routes";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { useRouter } from "next/router";
 import { useTheme } from "../../../hooks/useTheme";
+import { ThemeEnum } from "../../../types";
 
 type NavbarProps = {
   //
@@ -103,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                     "group bg-gray-50 dark:bg-dark-500 border border-gray-100 dark:border-dark-700 px-3 py-2 rounded-md text-sm font-medium"
                   }
                 >
-                  {theme === "dark" ? (
+                  {theme === ThemeEnum.dark ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
