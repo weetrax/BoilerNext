@@ -1,8 +1,8 @@
-import _Layout from '../components/_Layout';
-import { CurrentUserProvider } from '../providers/CurrentUserProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
+import _Layout from "../components/_Layout";
+import { CurrentUserProvider } from "../hooks/useCurrentUser";
+import { ThemeProvider } from "../hooks/useTheme";
 import type { AppProps } from "next/app";
-import '../styles/globals.css';
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
