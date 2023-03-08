@@ -23,12 +23,15 @@ const navigation = [
 ];
 
 const Navbar: React.FC<NavbarProps> = () => {
+  /* Hooks */
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useCurrentUser();
 
+  /* States */
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
+  /* Functions */
   const handleLogout = () => {
     setLogoutLoading(true);
     logout((err) => {
@@ -36,6 +39,7 @@ const Navbar: React.FC<NavbarProps> = () => {
     });
   };
 
+  /* Render */
   return (
     <Disclosure
       as="nav"
@@ -96,13 +100,11 @@ const Navbar: React.FC<NavbarProps> = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center gap-1">
                 <button
                   onClick={toggleTheme}
                   type="button"
-                  className={
-                    "group bg-gray-50 dark:bg-dark-500 border border-gray-100 dark:border-dark-700 px-3 py-2 rounded-md text-sm font-medium"
-                  }
+                  className={"group rounded-md text-sm font-medium"}
                 >
                   {theme === ThemeEnum.dark ? (
                     <svg
